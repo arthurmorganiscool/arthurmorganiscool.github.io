@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,7 +104,13 @@
         }
     </style>
 </head>
+
 <body>
+    <audio autoplay loop>
+        <source src="housebuildingsong.mp3" type="audio/mp3">
+        Your browser does not support the audio tag.
+    </audio>
+
     <div id="clickerArea">
         <h1>Arthur Clicker</h1>
         <p>Click on Arthur to increase your count:</p>
@@ -169,7 +176,7 @@
             if (clickCount >= cost && !autoClickerInterval) {
                 clickCount -= cost;
                 autoClickerCount++;
-                autoClickerInterval = setInterval(function() {
+                autoClickerInterval = setInterval(function () {
                     clickCount += clickMultiplier * autoClickerCount;
                     totalClicks += clickMultiplier * autoClickerCount;
                     updateDisplay();
@@ -213,4 +220,5 @@
         }
     </script>
 </body>
+
 </html>
