@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arthur Clicker</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #1a1a1a, #333); /* Gradient background */
+            color: #fff;
+            margin: 0;
+        }
+
+        #clickerArea {
+            text-align: center;
+        }
+
+        #arthurImg {
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            border-radius: 50%; /* Round corners for image */
+            transition: transform 0.2s ease-in-out; /* Add a smooth transition effect */
+        }
+
+        #arthurImg:hover {
+            transform: scale(1.1); /* Scale up on hover */
+        }
+
+        #counterDisplay {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        #stats {
+            text-align: center;
+        }
+
+        #resetButton {
+            padding: 10px;
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease; /* Add a smooth transition effect */
+        }
+
+        #resetButton:hover {
+            background-color: #777; /* Darken on hover */
+        }
+
+        #upgrades {
+            margin-top: 20px;
+        }
+
+        .upgrade {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease; /* Add a smooth transition effect */
+        }
+
+        .upgrade:hover {
+            background-color: #555; /* Darken on hover */
+        }
+
+        #confirmationPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #555;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            z-index: 999;
+            border-radius: 10px;
+        }
+
+        .confirmationButton {
+            margin: 10px;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #777;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease; /* Add a smooth transition effect */
+        }
+
+        .confirmationButton:hover {
+            background-color: #555; /* Darken on hover */
+        }
+    </style>
+</head>
+<body>
+    <div id="clickerArea">
+        <h1>Arthur Clicker</h1>
+        <p>Click on Arthur to increase your count:</p>
+        <img src="morgan.jpg" alt="Arthur Morgan" id="arthurImg" onclick="incrementCount()">
+        <p id="counterDisplay">Click Count: <span id="count">0</span></p>
+    </div>
+
+    <div id="stats">
+        <h2>Stats</h2>
+        <p>Total Clicks: <span id="totalClicks">0</span></p>
+        <p>Click Multiplier: <span id="clickMultiplier">1</span></p>
+        <p>Auto Clickers: <span id="autoClickers">0</span></p>
+        <button id="resetButton" onclick="showConfirmationPopup()">Reset Progress</button>
+    </div>
+
+    <div id="upgrades">
+        <h2>Upgrades</h2>
+        <div id="upgradesList">
+            <div class="upgrade" onclick="buyUpgrade(10, 2)">Upgrade 1: Sharpshooter<br>Cost: 10 clicks</div>
+            <div class="upgrade" onclick="buyUpgrade(20, 3)">Upgrade 2: Dead Eye<br>Cost: 20 clicks</div>
+            <div class="upgrade" onclick="buyUpgrade(50, 5)">Upgrade 3: Outlaw's Spirit<br>Cost: 50 clicks</div>
+            <div class="upgrade" onclick="buyUpgrade(100, 10)">Upgrade 4: Gunslinger<br>Cost: 100 clicks</div>
+            <div class="upgrade" onclick="buyUpgrade(200, 20)">Upgrade 5: Legend of the West<br>Cost: 200 clicks</div>
+            <div class="upgrade" onclick="buyAutoClicker(500)">Upgrade 6: Auto Clicker<br>Cost: 500 clicks</div>
+            <div class="upgrade" onclick="buyUpgrade(300, 30)">Upgrade 7: Van der Linde Vision<br>Cost: 300 clicks</div>
+            <div class="upgrade" onclick="buyUpgrade(400, 40)">Upgrade 8: Revolver Mastery<br>Cost: 400 clicks</div>
+            <div class="upgrade" onclick="buyUpgrade(600, 60)">Upgrade 9: Bounty Hunter<br>Cost: 600 clicks</div>
+            <div class="upgrade" onclick="buyAutoClicker(1000)">Upgrade 10: Quick Draw<br>Cost: 1000 clicks</div>
+            <div class="upgrade" onclick="buyUpgrade(69, 10)">Upgrade 11: lol<br>Cost: 69 clicks</div>
+        </div>
+    </div>
+
+    <div id="confirmationPopup">
+        <p>u sure buddy?</p>
+        <button class="confirmationButton" onclick="resetProgress(true)">uhhuh</button>
+        <button class="confirmationButton" onclick="resetProgress(false)">nuhuh</button>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        let totalClicks = 0;
+        let clickMultiplier = 1;
+        let autoClickerCount = 0;
+        let autoClickerInterval;
+
+        function incrementCount() {
+            clickCount += clickMultiplier;
+            totalClicks++;
+            updateDisplay();
+        }
+
+        function buyUpgrade(cost, multiplier) {
+            if (clickCount >= cost) {
+                clickCount -= cost;
+                clickMultiplier += multiplier;
+                updateDisplay();
+            } else {
+                alert("Not enough clicks to buy this upgrade!");
+            }
+        }
+
+        function buyAutoClicker(cost) {
+            if (clickCount >= cost && !autoClickerInterval) {
+                clickCount -= cost;
+                autoClickerCount++;
+                autoClickerInterval = setInterval(function() {
+                    clickCount += clickMultiplier * autoClickerCount;
+                    totalClicks += clickMultiplier * autoClickerCount;
+                    updateDisplay();
+                }, 1000);
+                updateDisplay();
+            } else if (autoClickerInterval) {
+                alert("You already have an Auto Clicker!");
+            } else {
+                alert("Not enough clicks to buy this upgrade!");
+            }
+        }
+
+        function resetProgress(confirm) {
+            if (confirm) {
+                clickCount = 0;
+                totalClicks = 0;
+                clickMultiplier = 1;
+                autoClickerCount = 0;
+                clearInterval(autoClickerInterval);
+                autoClickerInterval = null;
+                updateDisplay();
+                hideConfirmationPopup();
+            } else {
+                hideConfirmationPopup();
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('count').innerText = clickCount;
+            document.getElementById('totalClicks').innerText = totalClicks;
+            document.getElementById('clickMultiplier').innerText = clickMultiplier;
+            document.getElementById('autoClickers').innerText = autoClickerCount;
+        }
+
+        function showConfirmationPopup() {
+            document.getElementById('confirmationPopup').style.display = 'block';
+        }
+
+        function hideConfirmationPopup() {
+            document.getElementById('confirmationPopup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
